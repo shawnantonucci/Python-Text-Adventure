@@ -1,14 +1,20 @@
 def play():
+
+    inventory = ["Dagger", "Gold(5)", "Slice of bread"]
+
     print("Escape from Cave Terror!")
     action_input = get_player_command()
-    if action_input == "n" or action_input == "N" or action_input == "North" or action_input == "north":
+    if action_input in ["n", "N", "north", "North", "^"]:
         print("Go North!")
-    elif action_input == "s" or action_input == "S" or action_input == "South" or action_input == "south":
+    elif action_input in ["s", "S", "south", "South", "v"]:
         print("Go South!")
-    elif action_input == "e" or action_input == "E" or action_input == "East" or action_input == "east":
+    elif action_input in ["e", "E", "east", "East", ">"]:
         print("Go East!")
-    elif action_input == "w" or action_input == "W" or action_input == "West" or action_input == "west":
+    elif action_input in ["w", "W", "west", "West", "<"]:
         print("Go West!")
+    elif action_input in ["i", "I", "inventory", "Inventory"]:
+        print("Inventory: ")
+        print(inventory)
     else:
         print("Invalid Action")
 
