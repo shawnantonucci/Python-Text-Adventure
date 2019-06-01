@@ -13,7 +13,7 @@ class Player:
     def move_north(self):
         self.move(dx=0, dy=-1)
 
-    def move_sout(self):
+    def move_south(self):
         self.move(dx=0, dy=1)
 
     def move_east(self):

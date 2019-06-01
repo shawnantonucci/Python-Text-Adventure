@@ -1,3 +1,5 @@
+import enemies
+import random
 
 class MapTile:
     def __init__(self, x, y):
@@ -31,11 +33,31 @@ class VictoryTile(MapTile):
         You escape the forest alive!
         """
 
+class EnemyTile(MapTile):
+    def __init__(self, x, y):
+        r = random.random()
+        if r < 0.50:
+            self.enemy = enemies.Zombie()
+        elif r < 0.80:
+            self.enemy = enemies.ZombieDog()
+        elif r < 0.95:
+            self.enemy = enemies.ZombieBear()
+        else:
+            self.enemy = enemies.MutantCreature()
+
+        super().__init__(x, y)
+
+    def intro_text(self):
+        if self.enemy.is_alive():
+            return "A {} awaits!".format(self.enemy.name)
+        else:
+            return "You've defeated the {}.".format(self.enemy.name)
+
 world_map = [
     [None,VictoryTile(1,0),None],
-    [None,ForestTrailTile(1,1),None],
+    [None,EnemyTile(1,1),None],
     [ForestTrailTile(0,2),StartTile(1,2),ForestTrailTile(2,2)],
-    [None,ForestTrailTile(1,3),None]
+    [None,EnemyTile(1,3),None]
 ]
 
 
