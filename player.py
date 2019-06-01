@@ -1,10 +1,12 @@
 import items
+import world
 
 class Player:
     def __init__(self):
         self.inventory = [items.Rock(), items.Dagger(), "Gold(5)", "Slice of bread", "Compass"]
         self.x = 1
         self.y = 2
+        self.hp = 100
 
     def move(self, dx, dy):
         self.x += dx
@@ -41,3 +43,21 @@ class Player:
                 pass
 
         return best_weapon
+
+    def attack(self):
+        best_weapon = self.most_powerful_weapon()
+        room = world.tile_at(self.x, self.y)
+        enemy = room.enemy
+        print("You use {} against {}!".format(best_weapon.name, enemy.name))
+        enemy.hp -= best_weapon.damage
+        if not enemy.is_alive():
+            print("You killed {}!".format(enemy.name))
+        else:
+            print("{} HP left: {}".format(enemy.name, enemy.hp))
+
+
+
+
+
+
+

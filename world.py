@@ -9,6 +9,9 @@ class MapTile:
     def intro_text(self):
         raise NotImplementedError("Create a subclass instead!")
 
+    def modify_player(self, player):
+        pass
+
 class StartTile(MapTile):
     def intro_text(self):
         return """
@@ -38,20 +41,44 @@ class EnemyTile(MapTile):
         r = random.random()
         if r < 0.50:
             self.enemy = enemies.Zombie()
+            self.alive_text = "\nA zombie sets its sights on you and runs at you! \n"
+            self.dead_text = "\nThe zombies drops to the ground. \n"
         elif r < 0.80:
             self.enemy = enemies.ZombieDog()
+            self.alive_text = "\nA zombie dog growls and lunges at you! \n"
+            self.dead_text = "\nThe zombies drops to the ground. \n"
         elif r < 0.95:
             self.enemy = enemies.ZombieBear()
+            self.alive_text = """\nA zombie bear is sitting down eating a human
+            a human corpse. It turns his head around and makes eye contact.
+            The zombie bear lunges at you. \n
+            """
+            self.dead_text = "\nThe zombies bear drops to the ground shaking everything. \n"
         else:
             self.enemy = enemies.MutantCreature()
+            self.alive_text = """\nA mutant zombie that is times the size of a regular human
+            slams onto the ground in front of you. \n
+            """
+            self.dead_text = """\nThe mutant starts to grow 6 times the size and explodes.
+            blood and flesh fly everywhere. \n
+            """
 
         super().__init__(x, y)
 
+    # def intro_text(self):
+    #     if self.enemy.is_alive():
+    #         return "A {} awaits!".format(self.enemy.name)
+    #     else:
+    #         return "You've defeated the {}.".format(self.enemy.name)
     def intro_text(self):
+        text = self.alive_text if self.enemy.is_alive() else self.dead_text
+        return text
+
+    def modify_player(self, player):
         if self.enemy.is_alive():
-            return "A {} awaits!".format(self.enemy.name)
-        else:
-            return "You've defeated the {}.".format(self.enemy.name)
+            player.hp = player.hp - self.enemy.damage
+            print("Enemy does {} damage. You have {} HP remaining.".
+                  format(self.enemy.damage, player.hp))
 
 world_map = [
     [None,VictoryTile(1,0),None],
