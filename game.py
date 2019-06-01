@@ -1,33 +1,31 @@
-class Rock:
+class Weapon:
+    def __init__(self):
+        raise NotImplementedError("Do not create raw Weapon objects.")
+
+    def __str__(self):
+         return self.name
+
+class Rock(Weapon):
     def __init__(self):
         self.name = "Rock"
         self.description = "A rock the size of a baseball."
-        slef.damage = 5
+        self.damage = 5
 
-        def __str__(self):
-            return self.name
 
-class Dagger:
+class Dagger(Weapon):
     def __init__(self):
         self.name = "Dagger"
         self.description = "A small dagger. It looks pretty sharp."
         self.damage = 10
 
-    def __str__(self):
-        return self.name
-
-class RustySword:
+class RustySword(Weapon):
     def __init__(self):
         self.name = "Rusty Sword"
         self.description = "A rusty sword. Its pretty sharp still"
-        slef.damage = 20
-
-    def __str__(self):
-        return self.name
-
+        self.damage = 20
 
 def play():
-    inventory = [Dagger(), "Gold(5)", "Slice of bread"]
+    inventory = [Rock(), Dagger(), "Gold(5)", "Slice of bread"]
     print("Escape from Cave Terror!")
 
     while True:
@@ -50,5 +48,19 @@ def play():
 
 def get_player_command():
     return input("Action: ")
+
+
+def most_powerful_weapon(inventory):
+    max_damage = 0
+    best_weapon = None
+    for item in inventory:
+        try:
+            if item.damage > max_damage:
+                best_weapon = item
+                max_damage = item.damage
+        except AttributeError:
+             pass
+
+    return best_weapon
 
 play()
