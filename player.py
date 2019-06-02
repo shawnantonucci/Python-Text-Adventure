@@ -3,10 +3,15 @@ import world
 
 class Player:
     def __init__(self):
-        self.inventory = [items.Rock(), items.Dagger(), "Gold(5)", items.PlainBread(), "Compass"]
-        self.x = 1
-        self.y = 2
+        self.inventory = [items.Rock(), items.Dagger(), items.PlainBread(), "Compass"]
+        self.x = world.start_tile_location[0]
+        self.y = world.start_tile_location[1]
         self.hp = 100
+        self.gold = 5
+        self.victory = False
+
+    def is_alive(self):
+        return self.hp > 0
 
     def move(self, dx, dy):
         self.x += dx
@@ -28,6 +33,7 @@ class Player:
         print("Inventory: ")
         for item in self.inventory:
             print('* ' + str(item))
+        print("Gold: {}".format(self.gold))
         best_weapon = self.most_powerful_weapon()
         print("Your best weapon is your {}".format(best_weapon))
 
@@ -76,6 +82,10 @@ class Player:
                 valid = True
             except (ValueError, IndexError):
                 print("Invalid choice, try again.")
+
+    def trade(self):
+        room = world.tile_at(self.x, self.y)
+        room.check_if_trade(self)
 
 
 

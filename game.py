@@ -6,11 +6,14 @@ def play():
     print("Undead Escape!")
     world.parse_world_dsl()
     player = Player()
-    while True:
+    while player.is_alive() and not player.victory:
         room = world.tile_at(player.x, player.y)
         print(room.intro_text())
         room.modify_player(player)
-        choose_action(room, player)
+        if player.is_alive() and not player.victory:
+            choose_action(room, player)
+        elif not player.is_alive():
+            print("You failed to survive....")
 
 def choose_action(room, player):
     action = None
@@ -28,6 +31,8 @@ def get_available_actions(room, player):
     print("Choose an action: ")
     if player.inventory:
         action_adder(actions, "i", player.print_inventory, "Display inventory")
+    if isinstance(room, world.TraderTile):
+        action_adder(actions, "t", player.trade, "Trade")
     if isinstance(room, world.EnemyTile) and room.enemy.is_alive():
         action_adder(actions, "a", player.attack, "Attack")
     else:

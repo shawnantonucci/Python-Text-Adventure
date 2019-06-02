@@ -1,4 +1,5 @@
 import enemies
+import npc
 import random
 from colorama import init, Fore, Back, Style
 
@@ -35,9 +36,12 @@ class ForestTrailTile(MapTile):
         """
 
 class VictoryTile(MapTile):
+    def modify_player(self, player):
+        player.victory = True
+
     def intro_text(self):
         return """
-        You escape the forest alive!
+        You escape the quarantine zone!
         """
 
 class EnemyTile(MapTile):
@@ -69,11 +73,6 @@ class EnemyTile(MapTile):
 
         super().__init__(x, y)
 
-    # def intro_text(self):
-    #     if self.enemy.is_alive():
-    #         return "A {} awaits!".format(self.enemy.name)
-    #     else:
-    #         return "You've defeated the {}.".format(self.enemy.name)
     def intro_text(self):
         text = self.alive_text if self.enemy.is_alive() else self.dead_text
         return text
@@ -85,13 +84,88 @@ class EnemyTile(MapTile):
                   format(self.enemy.damage, player.hp))
             print(Style.RESET_ALL)
 
+class TraderTile(MapTile):
+    def __init__(self, x, y):
+        self.trader = npc.Trader()
+        super().__init__(x, y)
+
+    def trade(self, buyer, seller):
+        for i, item in enumerate(seller.inventory, 1):
+            print("{}. {} - {} Gold".format(i, item.name, item.value))
+        while True:
+            user_input = input("Choose an item or press Q to exit: ")
+            if user_input in ["Q", "q"]:
+                return
+            else:
+                try:
+                    choice = int(user_input)
+                    to_swap = seller.inventory[choice - 1]
+                    self.swap(seller, buyer, to_swap)
+                except ValueError:
+                    print("Invalid choice!")
+
+    def swap(self, seller, buyer, item):
+        if item.value > buyer.gold:
+            print("That's to exspensive")
+            return
+        seller.inventory.remove(item)
+        buyer.inventory.append(item)
+        seller.gold = seller.gold + item.value
+        buyer.gold = buyer.gold - item.value
+        print("Trade complete!")
+
+    def check_if_trade(self, player):
+        while True:
+            print("Would you like to (B)uy, (S)ell, or (Q)uit?")
+            user_input = input()
+            if user_input in ["Q", "q"]:
+                return
+            elif user_input in ["B", "b"]:
+                print("Here's whats available to buy: ")
+                self.trade(buyer=player, seller=self.trader)
+            elif user_input in ["S", "s"]:
+                print("Here's whats available to sell: ")
+                self.trade(buyer=self.trader, seller=player)
+            else:
+                print("Invalid choice!")
+
+    def intro_text(self):
+        return """
+        A creepy old man hidden in an alley hollers at you to come
+        see what he has for sale.
+        """
+
+class FindGoldTile(MapTile):
+    def __init__(self, x, y):
+        self.gold = random.randint(1, 50)
+        self.gold_claimed = False
+        super().__init__(x, y)
+
+    def modify_player(self, player):
+        if not self.gold_claimed:
+            self.gold_claimed = True
+            player.gold = player.gold + self.gold
+            print("+{} gold added.".format(self.gold))
+
+    def intro_text(self):
+        if self.gold_claimed:
+            return """
+            Nothing here is of any interest to you.
+            """
+        else:
+            return """
+            Someone left some gold laying around! You pick it up.
+            """
+
 world_dsl = """
-|     |VT|     |
-|     |EN|     |
-|EN|ST|EN|
-|     |EN|     |
+|EN|EN|VT|EN|EN|
+|EN|     |     |     |EN|
+|EN|FG|EN|     |TT|
+|TT|     |ST|FG|EN|
+|FG|     |EN|     |FG|
 """
 
+world_map = []
 
 def is_dsl_valid(dsl):
     if dsl.count("|ST|") != 1:
@@ -110,11 +184,14 @@ def is_dsl_valid(dsl):
 tile_type_dict = {"VT": VictoryTile,
                             "EN": EnemyTile,
                             "ST": StartTile,
+                            "FG": FindGoldTile,
+                            "TT": TraderTile,
                             "     ": None}
 
 
 world_map = []
 
+start_tile_location = None
 
 def parse_world_dsl():
     if not is_dsl_valid(world_dsl):
@@ -129,6 +206,9 @@ def parse_world_dsl():
         dsl_cells = [c for c in dsl_cells if c]
         for x, dsl_cell in enumerate(dsl_cells):
             tile_type = tile_type_dict[dsl_cell]
+            if tile_type == StartTile:
+                global start_tile_location
+                start_tile_location = x, y
             row.append(tile_type(x, y) if tile_type else None)
 
         world_map.append(row)
