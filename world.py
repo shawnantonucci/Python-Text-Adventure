@@ -22,9 +22,7 @@ class StartTile(MapTile):
         return """
         You wake up in the middle of the woods. It's pretty dark out
         and you are soaking wet! You seem lost in direction and
-        have no idea where you are. Good thing you never leave
-        the house unprepared! You reach in your pocket and pull
-        out a golden compass.
+        have no idea where you are
         """
 
 class ForestTrailTile(MapTile):

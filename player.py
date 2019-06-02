@@ -3,7 +3,7 @@ import world
 
 class Player:
     def __init__(self):
-        self.inventory = [items.Rock(), items.Dagger(), items.PlainBread(), "Compass"]
+        self.inventory = [items.Rock(), items.Dagger(), items.PlainBread()]
         self.x = world.start_tile_location[0]
         self.y = world.start_tile_location[1]
         self.hp = 100
