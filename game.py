@@ -3,7 +3,9 @@ from player import Player
 import world
 
 def play():
+    print("--------------")
     print("Undead Escape!")
+    print("--------------")
     world.parse_world_dsl()
     player = Player()
     while player.is_alive() and not player.victory:
@@ -28,7 +30,8 @@ def choose_action(room, player):
 
 def get_available_actions(room, player):
     actions = OrderedDict()
-    print("Choose an action: ")
+    print("----------------")
+    print("Choose an action: \n")
     if player.inventory:
         action_adder(actions, "i", player.print_inventory, "Display inventory")
     if isinstance(room, world.TraderTile):
@@ -45,7 +48,7 @@ def get_available_actions(room, player):
         if world.tile_at(room.x - 1, room.y):
             action_adder(actions, "w", player.move_west, "Go west")
     if player.hp < 100:
-        action_adder(actions, "h", player.heal, "Heal")
+        action_adder(actions, "h", player.heal, "Heal \n")
 
     return actions
 

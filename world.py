@@ -20,17 +20,17 @@ class MapTile:
 class StartTile(MapTile):
     def intro_text(self):
         return """
-        You wake up in the middle of the woods. It's pretty dark out
-        and you are soaking wet! You seem lost in direction and
-        have no idea where you are
+    You wake up in the middle of the woods. It's pretty dark out
+     and you are soaking wet! You seem lost in direction and
+     have no idea where you are
         """
 
 class ForestTrailTile(MapTile):
     def intro_text(self):
         return """
-        The tree branches are swaying, and the crickets are playing
-        a song in the background. The trail is barly visable with the
-        full moon shining your path.
+    The tree branches are swaying, and the crickets are playing
+     a song in the background. The trail is barly visable with the
+     full moon shining your path.
         """
 
 class VictoryTile(MapTile):
@@ -39,11 +39,12 @@ class VictoryTile(MapTile):
 
     def intro_text(self):
         return """
-        You escape the quarantine zone!
+    You escape the quarantine zone!
         """
 
 class EnemyTile(MapTile):
     def __init__(self, x, y):
+        self.enemy_killed = False
         r = random.random()
         if r < 0.50:
             self.enemy = enemies.Zombie()
@@ -55,25 +56,32 @@ class EnemyTile(MapTile):
             self.dead_text = "\nThe zombies drops to the ground. \n"
         elif r < 0.95:
             self.enemy = enemies.ZombieBear()
-            self.alive_text = """\nA zombie bear is sitting down eating a human
-            a human corpse. It turns his head around and makes eye contact.
-            The zombie bear lunges at you. \n
+            self.alive_text = """\n
+    A zombie bear is sitting down eating a human
+     a human corpse. It turns his head around and makes eye contact.
+     The zombie bear lunges at you. \n
             """
             self.dead_text = "\nThe zombies bear drops to the ground shaking everything. \n"
         else:
             self.enemy = enemies.MutantCreature()
-            self.alive_text = """\nA mutant zombie that is times the size of a regular human
-            slams onto the ground in front of you. \n
+            self.alive_text = """\n
+    A mutant zombie that is times the size of a regular human
+     slams onto the ground in front of you. \n
             """
-            self.dead_text = """\nThe mutant starts to grow 6 times the size and explodes.
-            blood and flesh fly everywhere. \n
+            self.dead_text = """\n
+    The mutant starts to grow 6 times the size and explodes.
+     blood and flesh fly everywhere. \n
             """
 
         super().__init__(x, y)
 
     def intro_text(self):
-        text = self.alive_text if self.enemy.is_alive() else self.dead_text
-        return text
+        if self.enemy_killed:
+            text = ""
+            return text
+        elif not self.enemy_killed:
+            text = self.alive_text if self.enemy.is_alive() else self.dead_text
+            return text
 
     def modify_player(self, player):
         if self.enemy.is_alive():
@@ -81,6 +89,9 @@ class EnemyTile(MapTile):
             print(Fore.RED + "Enemy does {} damage. You have {} HP remaining.".
                   format(self.enemy.damage, player.hp))
             print(Style.RESET_ALL)
+        elif not self.enemy.is_alive():
+            self.enemy_killed = True
+            print("Nothing of interest here. Just an enemy you vanquished.\n")
 
 class TraderTile(MapTile):
     def __init__(self, x, y):
@@ -129,8 +140,8 @@ class TraderTile(MapTile):
 
     def intro_text(self):
         return """
-        A creepy old man hidden in an alley hollers at you to come
-        see what he has for sale.
+    A creepy old man hidden in an alley hollers at you to come
+     see what he has for sale.
         """
 
 class FindGoldTile(MapTile):
@@ -148,11 +159,11 @@ class FindGoldTile(MapTile):
     def intro_text(self):
         if self.gold_claimed:
             return """
-            Nothing here is of any interest to you.
+    Nothing here is of any interest to you.
             """
         else:
             return """
-            Someone left some gold laying around! You pick it up.
+    Someone left some gold laying around! You pick it up.
             """
 
 world_dsl = """
