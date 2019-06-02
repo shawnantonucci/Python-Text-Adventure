@@ -2,7 +2,6 @@ from collections import OrderedDict
 from player import Player
 import world
 
-
 def play():
     print("\n Escape from Cave Terror!")
     player = Player()
@@ -11,6 +10,7 @@ def play():
         print(room.intro_text())
         room.modify_player(player) # New line
         choose_action(room, player)
+
 
         # if player.move_north:
         #     actions["n"] = player.move_north

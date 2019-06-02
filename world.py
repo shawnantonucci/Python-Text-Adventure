@@ -1,10 +1,14 @@
 import enemies
 import random
+from colorama import init, Fore, Back, Style
+
+init()
 
 class MapTile:
     def __init__(self, x, y):
         self.x = x
         self.y = y
+        self.name = None
 
     def intro_text(self):
         raise NotImplementedError("Create a subclass instead!")
@@ -77,8 +81,9 @@ class EnemyTile(MapTile):
     def modify_player(self, player):
         if self.enemy.is_alive():
             player.hp = player.hp - self.enemy.damage
-            print("Enemy does {} damage. You have {} HP remaining.".
+            print(Fore.RED + "Enemy does {} damage. You have {} HP remaining.".
                   format(self.enemy.damage, player.hp))
+            print(Style.RESET_ALL)
 
 world_map = [
     [None,VictoryTile(1,0),None],
