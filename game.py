@@ -3,45 +3,14 @@ from player import Player
 import world
 
 def play():
-    print("\n Escape from Cave Terror!")
+    print("Undead Escape!")
+    world.parse_world_dsl()
     player = Player()
     while True:
         room = world.tile_at(player.x, player.y)
         print(room.intro_text())
-        room.modify_player(player) # New line
+        room.modify_player(player)
         choose_action(room, player)
-
-
-        # if player.move_north:
-        #     actions["n"] = player.move_north
-        #     actions["N"] = player.move_north
-        #     print("n")
-        # elif player.move_south:
-        #     actions["s"] = player.move_south
-        #     actions["S"] = player.move_south
-        #     print("s")
-        # elif player.move_east:
-        #     actions["e"] = player.move_east
-        #     actions["E"] = player.move_east
-        #     print("e")
-        # elif player.move_west:
-        #     actions["w"] = player.move_west
-        #     actions["W"] = player.move_west
-        #     print("w")
-        # elif player.inventory:
-        #     actions["i"] = player.print_inventory
-        #     actions["I"] = player.print_inventory
-        #     print("i: View inventory")
-        # elif player.attack:
-        #     actions["a"] = player.attack
-        #     actions["A"] = player.attack
-        #     print("a: Attack")
-        # elif player.heal:
-        #     actions["h"] = player.heal
-        #     actions["H"] = player.heal
-        #     print("h: Heal")
-        # else:
-        #     print("Invalid action!")
 
 def choose_action(room, player):
     action = None
